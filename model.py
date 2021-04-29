@@ -39,17 +39,17 @@ class Osebno(object):
 
     def priporocene_cal(self):
         if self.bmi() < 18.5:
-            return int(round(self.bmr_na_aktivnost(), 0)) + 500
+            return int(self.bmr_na_aktivnost()) + 500
         if 18.5 <= self.bmi < 25:
-            return int(round(self.bmr_na_aktivnost(), 0))
+            return int(self.bmr_na_aktivnost())
         if self.bmi >= 25:
-            return int(round(self.bmr_na_aktivnost(), 0)) - 500
+            return int(self.bmr_na_aktivnost()) - 500
     
     def priporocene(self):
         priporocene_mascobe = self.priporocene_cal() * 25 / 400
         priporoceni_ogljikovi = self.priporocene_cal() * 50 / 400
         priporoceni_proteini = self.priporocene_cal() * 25 / 400
-        return (int(priporoceni_ogljikovi), int(priporoceni_proteini), int(priporocene_mascobe))
+        return (round(int(priporoceni_ogljikovi), 0), round(int(priporoceni_proteini), 0), round(int(priporocene_mascobe), 0))
 
 
 # *******************************************  VODENJE EVIDENCE  ***********************************************
@@ -165,14 +165,14 @@ class Sledilnik(Osebno):
     def slovar_vrednosti(self):
         slovar = {
             'datum' : self.datum,
-            'cal' : self.porabljeno()[0],
-            'oh' : self.porabljeno()[1],
-            'pro' : self.porabljeno()[2],
-            'mas' : self.porabljeno()[3],
-            'vse_cal' : self.preostalo()[0],
-            'vse_oh' : self.preostalo()[1],
-            'vse_pro' : self.preostalo()[2],
-            'vse_mas' : self.preostalo()[3]
+            'cal' : round(self.porabljeno()[0], 1),
+            'oh' : round(self.porabljeno()[1], 1),
+            'pro' : round(self.porabljeno()[2], 1),
+            'mas' : round(self.porabljeno()[3], 1),
+            'vse_cal' : round(self.preostalo()[0], 1),
+            'vse_oh' : round(self.preostalo()[1], 1),
+            'vse_pro' : round(self.preostalo()[2], 1),
+            'vse_mas' : round(self.preostalo()[3], 1)
         }
         return slovar
     
