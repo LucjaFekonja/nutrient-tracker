@@ -90,6 +90,7 @@
                 -moz-appearance: textfield;
                 }
 
+            /* source code: https://codepen.io/vkjgr/pen/VYMeXp */
             select {
                 appearance: none;
                 position: left;
