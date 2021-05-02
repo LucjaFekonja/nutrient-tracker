@@ -277,12 +277,12 @@ class Uporabnik():
     def object_uporabnik(cls, datoteka):
         with open(datoteka, encoding='utf-8') as dat:
             slovar = json.load(dat)
-        ime = slovar['ime']
-        geslo = slovar['geslo']
-        id_dneva = slovar['id_dneva']
+        ime = slovar.get('ime')
+        geslo = slovar.get('geslo')
+        id_dneva = slovar.get('id_dneva')
 
         sez = []
-        for dan in slovar['seznam_dni']:
+        for dan in slovar.get('seznam_dni'):
             sledilnik = Sledilnik.object_sledilnik(dan)
             sez.append(sledilnik)
         
@@ -311,10 +311,27 @@ class VsiUporabniki:
     def pokazi_uporabnike(self, mapa):
         uporabniki = {}
         for dat in os.listdir(mapa):
-            uporabnik = Uporabnik.object_uporabnik(
-                os.path.join(mapa, dat))
+            uporabnik = Uporabnik.object_uporabnik(os.path.join(mapa, dat))
             uporabniki[uporabnik.ime] = uporabnik
         return uporabniki
 
-    def shrani_uporabnika(self, ime):
+    def shrani(self, ime):
         self.uporabniki[ime].shrani_v_dat(os.path.join(self.mapa, ime + ".json"))
+
+    def preveri_ime_geslo(self, ime, geslo):
+        seznam_datotek = os.listdir(self.mapa)
+        seznam_imen = [x.split('.')[0] for x in seznam_datotek]
+
+        path = self.mapa
+        seznam_gesel = []
+        for dat in seznam_datotek:
+            datoteka = os.path.join(path, dat)
+            with open(datoteka, encoding='utf-8') as d:
+                seznam_gesel.append(str(json.load(d).get('geslo')))
+        
+        for oseba in seznam_imen:
+            for koda in seznam_gesel:
+                if ime != oseba or geslo != koda:
+                    return True     # lahko uporabiš
+                else:
+                    return False    # že obstaja
