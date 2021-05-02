@@ -13,7 +13,7 @@
     <input type="password" placeholder="Vpišite geslo" name="geslo" required>
 
     <br>
-    <button type="submit">Prijava</button>
+    <button class='button button1' type="submit">Prijava</button>
   </div>
 
   <div class="center">

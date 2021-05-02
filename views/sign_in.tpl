@@ -45,9 +45,7 @@
         </td>
       </tr>
     </table>  
-
-    <br>
-    <button type="submit">Vpis</button>
   </div>
 
+  <button class='button button2' type="submit">Vpis</button>
 </form> 

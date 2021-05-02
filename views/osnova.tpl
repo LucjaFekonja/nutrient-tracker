@@ -63,9 +63,18 @@
                 color: white;
                 padding: 14px 20px;
                 margin: 8px 0;
+                position: absolute;
                 border: none;
                 cursor: pointer;
-                width: 100%;
+                left: 50%;
+                -ms-transform: translate(-50%, -50%);
+                transform: translate(-50%, -50%);
+            }
+
+            .button1 {width: 100%;}
+            .button2 {
+                width: 500px;
+                margin-top: 1cm;
             }
 
             button:hover {
