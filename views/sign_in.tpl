@@ -1,6 +1,6 @@
 % rebase('osnova.tpl')
 
-<h1>NUT.TRACKER</h1>
+<h1><div class="center">NUT.TRACKER</div></h1>
 
 <form action="/vpis/" method="POST">
   <div class="container">
