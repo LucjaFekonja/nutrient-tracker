@@ -1,5 +1,4 @@
 import json
-import datetime
 import os
 
 # *******************************************  OSEBNI PODATKI  ***********************************************
@@ -55,8 +54,8 @@ class Osebno(object):
 # *******************************************  VODENJE EVIDENCE  ***********************************************
 
 def seznam(niz):
-    niz2 = niz.lstrip('\n')
-    sez1 = niz2.split(';')
+    niz = niz.replace('\n', '')
+    sez1 = niz.split(';')
     sez2 = [st for st in sez1[1:]]
     return [sez1[0]] + sez2
 
@@ -75,14 +74,6 @@ class Sledilnik(Osebno):
         self.starost = starost
         self.spol = spol
         self.aktivnost = aktivnost
-#        self.cal = 0
-#        self.mascobe = 0
-#        self.ogljikovi = 0
-#        self.proteini = 0   
-#        self.vse_cal = self.priporocene_cal()
-#        self.vsi_ogljikovi = self.priporocene()[0]
-#        self.vsi_proteini = self.priporocene()[1]
-#        self.vse_mascobe = self.priporocene()[2]
         self.seznam_hrane = dict()
         self.seznam_vrednosti = dict([
             ('vse_cal', self.priporocene_cal()),
@@ -108,21 +99,22 @@ class Sledilnik(Osebno):
         od vseh priporočenih odšteje iste količine in
         doda navedeno hrano in grame na seznam_hrane.
         """
-        a = Seznam()
+        a = Seznam('hrana.txt')
         vrednosti = a.naredi_slovar_hrane()[hrana]
         self.dodaj_na_seznam_hrane(hrana, float(gram))
 
-        self.seznam_vrednosti['porabljene_cal'] += float(vrednosti[0]) * gram / 100
-        self.seznam_vrednosti['porabljeni_oh'] += float(vrednosti[1]) * gram / 100
-        self.seznam_vrednosti['porabljeni_pro'] += float(vrednosti[2]) * gram / 100
-        self.seznam_vrednosti['porabljene_mas'] += float(vrednosti[3]) * gram / 100
+        self.seznam_vrednosti['porabljene_cal'] += round(float(vrednosti[0]) * gram / 100, 1)
+        self.seznam_vrednosti['porabljeni_oh'] += round(float(vrednosti[1]) * gram / 100, 1)
+        self.seznam_vrednosti['porabljeni_pro'] += round(float(vrednosti[2]) * gram / 100, 1)
+        self.seznam_vrednosti['porabljene_mas'] += round(float(vrednosti[3]) * gram / 100, 1)
     
-        self.seznam_vrednosti['preostale_cal'] -= float(vrednosti[0]) * gram / 100    
-        self.seznam_vrednosti['preostali_oh'] -= float(vrednosti[1]) * gram / 100
-        self.seznam_vrednosti['preostali_pro'] -= float(vrednosti[2]) * gram / 100
-        self.seznam_vrednosti['preostale_mas'] -= float(vrednosti[3]) * gram / 100
-
+        self.seznam_vrednosti['preostale_cal'] -= round(float(vrednosti[0]) * gram / 100, 1)    
+        self.seznam_vrednosti['preostali_oh'] -= round(float(vrednosti[1]) * gram / 100, 1)
+        self.seznam_vrednosti['preostali_pro'] -= round(float(vrednosti[2]) * gram / 100, 1)
+        self.seznam_vrednosti['preostale_mas'] -= round(float(vrednosti[3]) * gram / 100, 1)
+        
         return self.seznam_vrednosti
+
 
     def izbrisi(self, hrana):
         """
@@ -131,18 +123,18 @@ class Sledilnik(Osebno):
         izbriše navedeno hrano in grame iz seznam_hrane.
         """
         if hrana in self.seznam_hrane:
-            a = Seznam()
+            a = Seznam('hrana.txt')
             vrednosti = a.naredi_slovar_hrane()[hrana]
             kolicina = self.seznam_hrane[hrana]
-            self.seznam_vrednosti['porabljene_cal'] -= float(vrednosti[0]) * kolicina / 100
-            self.seznam_vrednosti['porabljeni_oh'] -= float(vrednosti[1]) * kolicina / 100
-            self.seznam_vrednosti['porabljeni_pro'] -= float(vrednosti[2]) * kolicina / 100
-            self.seznam_vrednosti['porabljene_mas'] -= float(vrednosti[3]) * kolicina / 100
+            self.seznam_vrednosti['porabljene_cal'] -= round(float(vrednosti[0]) * kolicina / 100, 1)
+            self.seznam_vrednosti['porabljeni_oh'] -= round(float(vrednosti[1]) * kolicina / 100, 1)
+            self.seznam_vrednosti['porabljeni_pro'] -= round(float(vrednosti[2]) * kolicina / 100, 1)
+            self.seznam_vrednosti['porabljene_mas'] -= round(float(vrednosti[3]) * kolicina / 100, 1)
 
-            self.seznam_vrednosti['preostale_cal'] += float(vrednosti[0]) * kolicina / 100
-            self.seznam_vrednosti['preostali_oh'] += float(vrednosti[1]) * kolicina / 100
-            self.seznam_vrednosti['preostali_pro'] += float(vrednosti[2]) * kolicina / 100
-            self.seznam_vrednosti['preostale_mas'] += float(vrednosti[3]) * kolicina / 100
+            self.seznam_vrednosti['preostale_cal'] += round(float(vrednosti[0]) * kolicina / 100, 1)
+            self.seznam_vrednosti['preostali_oh'] += round(float(vrednosti[1]) * kolicina / 100, 1)
+            self.seznam_vrednosti['preostali_pro'] += round(float(vrednosti[2]) * kolicina / 100, 1)
+            self.seznam_vrednosti['preostale_mas'] += round(float(vrednosti[3]) * kolicina / 100, 1)
             
             self.izbrisi_iz_seznama_hrane(hrana)
             return self.seznam_vrednosti
@@ -159,34 +151,6 @@ class Sledilnik(Osebno):
 
     def izbrisi_iz_seznama_hrane(self, hrana):
         del self.seznam_hrane[hrana]  
-
-    def pokazi_seznam_hrane(self):
-        return self.seznam_hrane
-
-    # ------------  Funkcije uporabljene v naprej  ------------
-#    def porabljeno(self):
-#        return [self.cal, self.ogljikovi, self.proteini, self.mascobe]
-#
-#    def preostalo(self):
-#        return [self.vse_cal, self.vsi_ogljikovi, self.vsi_proteini, self.vse_mascobe]
-#
-#    # Naredimo class object, na katerega se bomo sklicevali v drugih razredih
-#    def slovar_vrednosti(self):
-#        slovar = {
-#            'porabljene_cal' : round(self.porabljeno()[0], 1),
-#            'porabljeni_oh' : round(self.porabljeno()[1], 1),
-#            'porabljeni_pro' : round(self.porabljeno()[2], 1),
-#            'porabljene_mas' : round(self.porabljeno()[3], 1),
-#            'preostale_cal' : round(self.preostalo()[0], 1),
-#            'preostali_oh' : round(self.preostalo()[1], 1),
-#            'preostali_pro' : round(self.preostalo()[2], 1),
-#            'preostale_mas' : round(self.preostalo()[3], 1),
-#            'vse_cal' : round(self.priporocene_cal(), 1),
-#            'vsi_oh' : round(self.priporocene()[0], 1),
-#            'vsi_pro' : round(self.priporocene()[1], 1),
-#            'vse_mas' : round(self.priporocene()[2], 1),
-#        }
-#        return slovar
     
     def slovar_dneva(self):
         slovar = {
@@ -228,7 +192,6 @@ class Uporabnik():
 
     def nov_dan(self, teza, visina, starost, spol, aktivnost, datum=None):
         evidenca = Sledilnik(self.id_dneva, teza, visina, starost, spol, aktivnost, datum)
-        slovar = evidenca.slovar_dneva()
         self.seznam_dni.append(evidenca)
         self.id_dneva += 1
 
@@ -244,46 +207,6 @@ class Uporabnik():
         }
         with open(datoteka, 'w', encoding="utf-8") as dat:
             json.dump(slovar, dat, ensure_ascii=False, indent=6)
-
-
-    def hrana_po_dnevih(self, teza, visina, starost, spol, aktivnost, datum):
-        evidenca = Sledilnik(self.id_dneva, teza, visina, starost, spol, aktivnost, datum)
-        dat = evidenca.object_sledilnik(slovar).datum
-        hra = evidenca.object_sledilnik(slovar).seznam_hrane
-        hrana = []
-        for dan in self.seznam_dni:
-            hrana.append(dat)
-            hrana.append(hra)
-        hrana.sort(key=lambda sledilnik: sledilnik.datum)
-        return hrana
-        
-    def vrednosti_po_dnevih(self, teza, visina, starost, spol, aktivnost, datum):
-        evidenca = Sledilnik(self.id_dneva, teza, visina, starost, spol, aktivnost, datum)
-        vrednosti = []
-        for dan in self.seznam_dni:
-            vrednosti.append(evidenca.seznam_vrednosti)
-        vrednosti.sort(key=lambda sledilnik: sledilnik.datum)
-        return vrednosti
-
-    def hrana_danes(self, teza, visina, starost, spol, aktivnost, datum):
-        hrana = self.hrana_po_dnevih(teza, visina, starost, spol, aktivnost, datum)
-        danes = [datetime.datetime.now().day,
-                 datetime.datetime.now().month,
-                 datetime.datetime.now().year] 
-        danasnje = [
-            x for x in hrana if sledilnik.datum == danes 
-        ]
-        return danasnje
-
-    def vrednosti_danes(self, teza, visina, starost, spol, aktivnost, datum):
-        vrednosti = self.vrednosti_po_dnevih(teza, visina, starost, spol, aktivnost, datum)
-        danes = [datetime.datetime.now().day,
-                 datetime.datetime.now().month,
-                 datetime.datetime.now().year] 
-        danasnje = [
-            x for x in vrednosti if sledilnik.datum == danes
-        ]
-        return danasnje
 
     @classmethod
     def object_uporabnik(cls, datoteka):
@@ -331,6 +254,7 @@ class VsiUporabniki:
         self.uporabniki[ime].shrani_v_dat(os.path.join(self.mapa, ime + ".json"))
 
     def uporabnik_obstaja(self, seznam_imen, ime, geslo):
+        """ Funkcija, ki ob login-u preveri ali uporabnik obstaja """
         # seznam_imen = list(self.uporabniki.keys())         
         if len(seznam_imen) == 0:
             return False
@@ -354,31 +278,31 @@ class VsiUporabniki:
 # *******************************************  PREGLED DATOTEKE S HRANO  ***********************************************
 
 class Seznam():
-    def __init__(self):
-        pass
+    def __init__(self, file):
+        self.file = file
     
-    @staticmethod
-    def dodaj(hrana, cal, oh, pro, mas):
-        with open("C:\\Lucija\\1.letnik fmf\\UVP\\nutrient-tracker\\hrana.txt", 'a', encoding='utf-8') as dat:
+    def dodaj(self, hrana, cal, oh, pro, mas):
+        with open(self.file, 'a', encoding='utf-8') as dat:
             print(hrana + ';' + str(cal) + ';' + str(oh) + ';' + str(pro) + ';' + str(mas), file=dat)
-    
-    @staticmethod
-    def izbrisi(hrana):
-        del slovar_za_file[hrana]
-        with open("C:\\Lucija\\1.letnik fmf\\UVP\\nutrient-tracker\\hrana.txt", 'w', encoding='utf-8') as dat:
-            for stvar in slovar_za_file:
-                print(stvar + ';' + str(slovar_za_file.get(stvar)[0]) + ';' + str(slovar_za_file.get(stvar)[1]) + ';' + str(slovar_za_file.get(stvar)[2]) + ';' + str(slovar_za_file.get(stvar)[3]), file=dat)
 
-    @staticmethod
-    def odpri_seznam():
-        dat = open("C:\\Lucija\\1.letnik fmf\\UVP\\nutrient-tracker\\hrana.txt", 'r', encoding='utf-8')
-        print(dat.read())
-        dat.close()
+    def izbrisi(self, hrana):
+        slovar = self.naredi_slovar_hrane()
+        with open(self.file, 'w', encoding='utf-8') as dat:
+            for stvar in slovar:
+                if stvar == hrana:
+                    pass
+                else:
+                    print(str(stvar) + ';'               \
+                        + str(slovar[stvar][0]) + ';'    \
+                        + str(slovar[stvar][1]) + ';'    \
+                        + str(slovar[stvar][2]) + ';'    \
+                        + str(slovar[stvar][3]), file=dat)
 
-    @staticmethod
-    def naredi_slovar_hrane():
+    def naredi_slovar_hrane(self):
         slovar = dict()
-        with open("C:\\Lucija\\1.letnik fmf\\UVP\\nutrient-tracker\\hrana.txt", encoding="utf-8") as dat:
+        with open(self.file, encoding="utf-8") as dat:
             for vrstica in dat:
-                slovar.update( {seznam(vrstica)[0] : seznam(vrstica)[1:]} )
+                vrednosti = [float(v) for v in seznam(vrstica)[1:]]
+                slovar.update( {seznam(vrstica)[0] : vrednosti} )
         return slovar
+
