@@ -96,8 +96,17 @@
             .button4 {
                 height: 0.8cm;
                 border-width: 2px;
+                border-radius: 6px;
+                border-color: white;
                 background-color: rgb(192, 116, 182);
                 padding-top: 5px;
+            }
+            .button-izbrisi {
+                background-color: transparent;
+                border-color: transparent;
+                color: #04AA6D;
+                font-weight: bold;
+                margin: 0 auto;
             }
 
             button:hover {
@@ -138,6 +147,12 @@
                 border-radius: 0.25em;
                 -moz-appearance: textfield;
                 }
+
+            input[type=date] {
+              border-radius: 5px;
+              border-color: lightgray;
+            }
+
 
 
             #hrana-tabela {

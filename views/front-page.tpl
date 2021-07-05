@@ -2,7 +2,7 @@
 
 <a href="/odjava/" class='alignright' style='color:white' >Odjava</a>
 
-<form class='alignleft' action='/fp-izberi-dan/' method="POST">
+<form class='alignleft' action='/fp-izberi-dan/{{ime_uporabnika}}' method="POST">
     <label for="datum">Datum: </label>
     <input type="date" id="datum" name='datum' required> 
     <button class='button button4' type="submit" >Pošlji</button>
@@ -29,12 +29,18 @@
     <tr>
         <th>Hrana</th>
         <th>Količina</th>
+        <th></th>
     </tr>
 
     % for hrana in slovar_hrane.keys():
     <tr>
         <td>{{hrana}}</td>
         <td style="width: 30%;">{{slovar_hrane.get(hrana)}} g</td>
+        <td style="text-align: center;">
+            <form action="/fp-izbrisi/{{ime_uporabnika}}/{{datum}}" method="POST">
+                <button class="button-izbrisi" name="hrana" value="{{hrana}}" type="submit">Izbriši</button>
+            </form>
+        </td>
     </tr>
     % end
 </table>

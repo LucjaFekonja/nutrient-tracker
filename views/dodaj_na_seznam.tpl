@@ -40,7 +40,12 @@
         <td style="width: 17%; text-align: center;">{{slovar.get(hrana)[0]}}</td>
         <td style="width: 17%; text-align: center">{{slovar.get(hrana)[1]}}</td>
         <td style="width: 17%; text-align: center">{{slovar.get(hrana)[2]}}</td>
-        <td style="width: 17%; text-align: center">{{slovar.get(hrana)[3].strip('n\n')}}</td>
+        <td style="width: 17%; text-align: center">{{slovar.get(hrana)[3]}}</td>
+        <td style="text-align: center;">
+            <form action="/{{ime_uporabnika}}/{{datum}}/izbrisi-iz-seznama/" method="POST">
+                <button class="button-izbrisi" name="hrana" value="{{hrana}}" type="submit">Izbriši</button>
+            </form>
+        </td>
     </tr>
     % end
 </table>

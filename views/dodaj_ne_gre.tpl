@@ -4,7 +4,7 @@
 <h1><div class='naslov-fp'>Vpiši hrano<div></h1>
 
 <div class='container-small'>
-    <form action='/dodaj/{{datum}}/' method="POST">
+    <form action='/dodaj/{{ime_uporabnika}}/{{datum}}/' method="POST">
         <label for="hrana"><b>Hrana: </b></label>
         <input type="text2" name="hrana" required><br>
         <br>
