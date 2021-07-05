@@ -6,7 +6,7 @@ import os
 
 SKRIVNOST = 'banana'
 seznam_uporabnikov = model.VsiUporabniki('uporabniki')
-slovar_hrane = model.Seznam()
+slovar_hrane = model.Seznam('hrana.txt')
 
 #######################################  LOGIN PAGE   #######################################
 @bottle.get('/')
@@ -92,10 +92,24 @@ def front_page(ime_uporabnika, datum):
                                                    slovar_hrane=slovar_hrane,
                                                    datum_str=datum_str)
 
-@bottle.post('/fp-izberi-dan/')
-def front_page_dneva(): 
+@bottle.post('/fp-izbrisi/<ime_uporabnika>/<datum>')
+def izbrisi(ime_uporabnika, datum):
+    ime = bottle.request.get_cookie('ime', secret=SKRIVNOST)
+    uporabnik = seznam_uporabnikov.uporabniki.get(ime_uporabnika)
+    seznam_dni = uporabnik.seznam_dni
+    
+    hrana = bottle.request.forms.getunicode('hrana')
+    print(hrana)
+    datum_list = [int(x) for x in datum.split('-')]
+    dan_z_datumom(seznam_dni, datum_list).izbrisi(hrana)
+    seznam_uporabnikov.shrani(ime_uporabnika)
+    return bottle.redirect('/front-page/{}/{}'.format(ime_uporabnika, datum))
+
+
+@bottle.post('/fp-izberi-dan/<ime_uporabnika>')
+def front_page_dneva(ime_uporabnika): 
     ime = str(bottle.request.get_cookie('ime', secret=SKRIVNOST))
-    uporabnik = seznam_uporabnikov.uporabniki.get(ime)
+    uporabnik = seznam_uporabnikov.uporabniki.get(ime_uporabnika)
     dnevi = uporabnik.seznam_dni
     datum_str  = bottle.request.forms.getunicode('datum')
     datum = [int(x) for x in datum_str.split('-')]
@@ -115,13 +129,13 @@ def front_page_dneva():
                           dan.aktivnost,
                           datum
                           )
-        seznam_uporabnikov.shrani(ime)
-        return bottle.redirect('/front-page/{}/{}'.format(ime, datum_str))
+        seznam_uporabnikov.shrani(ime_uporabnika)
+        return bottle.redirect('/front-page/{}/{}'.format(ime_uporabnika, datum_str))
     else:
-        return bottle.redirect('/front-page/{}/{}'.format(ime, datum_str))
+        return bottle.redirect('/front-page/{}/{}'.format(ime_uporabnika, datum_str))
     
     
-#######################################  DODAJ PAGE   #######################################
+##########################################   DODAJ   ##########################################
 
 @bottle.post('/fp-dodaj/<ime_uporabnika>/<datum>')
 def gumb_dodaj(ime_uporabnika, datum):
@@ -139,7 +153,7 @@ def dodaj(ime_uporabnika, datum):
     uporabnik = seznam_uporabnikov.uporabniki.get(ime_uporabnika)
     seznam_dni = uporabnik.seznam_dni
 
-    hrana = bottle.request.forms.getunicode('hrana')
+    hrana = bottle.request.forms.getunicode('hrana').lower()
     gram = float(bottle.request.forms.getunicode('gram'))
 
     if hrana not in list(slovar_hrane.naredi_slovar_hrane().keys()):
@@ -157,7 +171,7 @@ def dodaj_ne_gre(ime_uporabnika, datum):
                                                      datum=datum)
 
 
-#######################################  DODAJ NA SEZNAM PAGE   #######################################
+#######################################  DODAJ NA SEZNAM   #######################################
 
 @bottle.post('/<ime_uporabnika>/<datum>/odpri_na_seznam/')
 def gumb_dodaj_na_seznam(ime_uporabnika, datum):
@@ -172,40 +186,30 @@ def dodaj_na_seznam(ime_uporabnika, datum):
 
 @bottle.post('/<ime_uporabnika>/<datum>/dodaj_na_seznam/')
 def dodaj_na_seznam(ime_uporabnika, datum):
-    hrana = bottle.request.forms.getunicode('hrana')
-    cal = bottle.request.forms.getunicode('cal')
-    oh = bottle.request.forms.getunicode('oh')
-    pro = bottle.request.forms.getunicode('pro')
-    mas = bottle.request.forms.getunicode('mas')
+    hrana = bottle.request.forms.getunicode('hrana').lower()
+    cal = bottle.request.forms.getunicode('cal').replace(',', '.')
+    oh = bottle.request.forms.getunicode('oh').replace(',', '.')
+    pro = bottle.request.forms.getunicode('pro').replace(',', '.')
+    mas = bottle.request.forms.getunicode('mas').replace(',', '.')
 
     slovar_hrane.dodaj(hrana, cal, oh, pro, mas)
     return bottle.redirect('/front-page/{}/{}'.format(ime_uporabnika, datum))
 
+@bottle.post('/<ime_uporabnika>/<datum>/izbrisi-iz-seznama/')
+def izbrisi_iz_seznama(ime_uporabnika, datum):
+    hrana = bottle.request.forms.getunicode('hrana')
+    slovar_hrane.izbrisi(hrana)
+    return bottle.redirect('/front-page/{}/{}'.format(ime_uporabnika, datum))
 
-#######################################  ODJAVA   #######################################
+
+############################################  ODJAVA   ############################################
 
 @bottle.get('/odjava/')
 def sign_in():
     return bottle.template('views/login.tpl')
 
 
-
-
-def naredi_seznam_dnevnih_osebnih_podatkov(datum):
-    ime = bottle.request.get_cookie('ime', secret=SKRIVNOST)
-    uporabnik = seznam_uporabnikov.uporabniki.get(ime)
-    dan = dan_z_datumom(uporabnik.seznam_dni, datum)
-    teza = dan.teza
-    visina = dan.visina
-    starost = dan.starost
-    spol = dan.spol
-    aktivnost = dan.aktivnost
-    return {'teza' : teza, 
-        'visina' : visina,
-        'starost' : starost,
-        'spol' : spol,
-        'aktivnost' : aktivnost}
-
+#####################################  UPORABLJENE FUNKCIJE   #####################################
 def dnevni_seznam_vrednosti(datum, ime):
     uporabnik = seznam_uporabnikov.uporabniki[ime]
     dan = dan_z_datumom(uporabnik.seznam_dni, datum)
@@ -221,5 +225,8 @@ def dan_z_datumom(seznam_dni, datum):
     for sez in seznam_dni:
         if sez.datum == datum:
             return sez
+
+
+###############################################     ###############################################
 
 bottle.run(reloader=True, debug=True)
