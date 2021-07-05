@@ -69,10 +69,10 @@ def sign_in():
     datum_str = datetime.date.today()
     datum = [int(x) for x in str(datum_str).split('-')]
 
-    seznam_uporabnikov.nov_uporabnik(ime, geslo)       # ustvarimo novega uporabnika iz podatkov
-    uporabnik = seznam_uporabnikov.uporabniki[ime]     # dostopamo do uporabnika
-    uporabnik.nov_dan(teza, visina, starost, spol, aktivnost, datum)   # dodamo nov dan na seznam_dni
-    seznam_uporabnikov.shrani(ime)    #shranimo v json v mapi 'uporabniki'
+    seznam_uporabnikov.nov_uporabnik(ime, geslo)                         # ustvarimo novega uporabnika iz podatkov
+    uporabnik = seznam_uporabnikov.uporabniki[ime]                       # dostopamo do uporabnika
+    uporabnik.nov_dan(teza, visina, starost, spol, aktivnost, datum)     # dodamo nov dan na seznam_dni
+    seznam_uporabnikov.shrani(ime)                                       # shranimo v json v mapi 'uporabniki'
 
     return bottle.redirect('/front-page/{}/{}'.format(ime, datum_str))
 
