@@ -84,10 +84,10 @@ class Sledilnik(Osebno):
             ('porabljeni_oh', 0),
             ('porabljeni_pro', 0),
             ('porabljene_mas', 0),
-            ('preostale_cal', self.priporocene_cal()),
-            ('preostali_oh', self.priporocene()[0]),
-            ('preostali_pro', self.priporocene()[1]),
-            ('preostale_mas', self.priporocene()[2]),
+            ('preostale_cal', round(self.priporocene_cal(), 1)),
+            ('preostali_oh', round(self.priporocene()[0], 1)),
+            ('preostali_pro', round(self.priporocene()[1], 1)),
+            ('preostale_mas', round(self.priporocene()[2], 1)),
             ])
         self.id = id
         self.datum = datum
