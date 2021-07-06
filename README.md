@@ -1,4 +1,4 @@
-# nutrient-tracker
+# nut.tracker
 je program za vodenje evidence dnevno pridobljenih makronutrientov, ki omogoča dolgoročno lokalno shranjevanje.
 
 Program zaženete z datoteko spletni_vmesnik.py.
