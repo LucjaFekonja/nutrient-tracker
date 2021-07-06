@@ -12,16 +12,23 @@
 
 <div class='container-small' style="border-color: #04AA6D;">
 % include('progress.html', oznaka='Kalorije', 
-%                          dolzina=seznam_vrednosti.get("porabljene_cal") / seznam_vrednosti.get("vse_cal") * 100)
-
+%                          porabljene=seznam_vrednosti.get("porabljene_cal"),
+%                          vse=seznam_vrednosti.get("vse_cal"),
+%                          dolzina=seznam_vrednosti.get("porabljene_cal") / seznam_vrednosti.get("vse_cal") * 100,)
 <br>
 % include('progress.html', oznaka='Ogljikovi hidrati', 
+%                          porabljene=seznam_vrednosti.get("porabljeni_oh"),
+%                          vse=seznam_vrednosti.get("vsi_oh"),
 %                          dolzina=seznam_vrednosti.get("porabljeni_oh") / seznam_vrednosti.get("vsi_oh") * 100)
 <br>
 % include('progress.html', oznaka='Proteini', 
+%                          porabljene=seznam_vrednosti.get("porabljeni_pro"),
+%                          vse=seznam_vrednosti.get("vsi_pro"),
 %                          dolzina=seznam_vrednosti.get("porabljeni_pro") / seznam_vrednosti.get("vsi_pro") * 100)
 <br>
 % include('progress.html', oznaka='Maščobe', 
+%                          porabljene=seznam_vrednosti.get("porabljene_mas"),
+%                          vse=seznam_vrednosti.get("vse_mas"),
 %                          dolzina=seznam_vrednosti.get("porabljene_mas") / seznam_vrednosti.get("vse_mas") * 100)
 </div>
 <br><br>
