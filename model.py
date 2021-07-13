@@ -16,51 +16,48 @@ class Osebno(object):
         self.aktivnost = aktivnost
 
     def bmi(self):
-        return round(self.teza / (self.visina) ** 2, 1)
+        return round(self.teza / (self.visina / 100) ** 2, 1)
 
     def bmr(self):
         if self.spol == 'M':
             return 88.362 + 13.397 * self.teza + 4.799 * self.visina - 5.677 * self.starost
-        if self.spol == 'Ž':
+        elif self.spol == 'Ž':
             return 447.593 + 9.247 * self.teza + 3.098 * self.visina - 4.330 * self.starost
 
     def bmr_na_aktivnost(self):
         if self.aktivnost ==  'nič':
             return self.bmr() * 1.2
-        if self.aktivnost == '1-2 dni':
+        elif self.aktivnost == '1-2 dni':
             return self.bmr() * 1.375
-        if self.aktivnost == '3-5 dni':
+        elif self.aktivnost == '3-5 dni':
             return self.bmr() * 1.55
-        if self.aktivnost == '6-7 dni':
+        elif self.aktivnost == '6-7 dni':
             return self.bmr() * 1.725
-        if self.aktivnost == '2-krat dnevno':
+        elif self.aktivnost == '2-krat dnevno':
             return self.bmr() * 1.9
 
     def priporocene_cal(self):
         if self.bmi() < 18.5:
             return int(self.bmr_na_aktivnost()) + 500
-        if 18.5 <= self.bmi < 25:
+        elif 18.5 <= self.bmi() < 25.0:
             return int(self.bmr_na_aktivnost())
-        if self.bmi >= 25:
+        elif self.bmi() >= 25.0:
             return int(self.bmr_na_aktivnost()) - 500
     
     def priporocene(self):
         priporocene_mascobe = self.priporocene_cal() * 25 / 400
         priporoceni_ogljikovi = self.priporocene_cal() * 50 / 400
         priporoceni_proteini = self.priporocene_cal() * 25 / 400
-        return (round(int(priporoceni_ogljikovi), 0), round(int(priporoceni_proteini), 0), round(int(priporocene_mascobe), 0))
+        return (int(priporoceni_ogljikovi), int(priporoceni_proteini), int(priporocene_mascobe))
 
 
 # *******************************************  VODENJE EVIDENCE  ***********************************************
 
 def seznam(niz):
-    niz = niz.replace('\n', '')
-    sez1 = niz.split(';')
-    sez2 = [st for st in sez1[1:]]
-    return [sez1[0]] + sez2
+    return niz.replace('\n', '').split(';')
 
 slovar = dict()
-with open("C:\\Lucija\\1.letnik fmf\\UVP\\nutrient-tracker\\hrana.txt", encoding="utf-8") as dat:
+with open("hrana.txt", encoding="utf-8") as dat:
     for vrstica in dat:
         slovar.update( {seznam(vrstica)[0] : seznam(vrstica)[1:]} )
 
@@ -69,11 +66,6 @@ with open("C:\\Lucija\\1.letnik fmf\\UVP\\nutrient-tracker\\hrana.txt", encoding
 class Sledilnik(Osebno):
     def __init__(self, id, teza, visina, starost, spol, aktivnost, datum=None):
         super().__init__(teza, visina, starost, spol, aktivnost)
-        self.teza = teza
-        self.visina = visina
-        self.starost = starost
-        self.spol = spol
-        self.aktivnost = aktivnost
         self.seznam_hrane = dict()
         self.seznam_vrednosti = dict([
             ('vse_cal', self.priporocene_cal()),
@@ -151,6 +143,7 @@ class Sledilnik(Osebno):
 
     def izbrisi_iz_seznama_hrane(self, hrana):
         del self.seznam_hrane[hrana]  
+    # ------------------------------------------------------
     
     def slovar_dneva(self):
         slovar = {
@@ -237,7 +230,7 @@ class VsiUporabniki:
         self.uporabniki = self.pokazi_uporabnike(mapa)
 
     def nov_uporabnik(self, ime, geslo):
-        if len(ime) > 0 and len(geslo) > 0 and (ime not in self.uporabniki):
+        if len(ime) > 0 and len(geslo) > 0:
             self.uporabniki[ime] = Uporabnik(ime, geslo)
             return self.uporabniki[ime]
         else:
@@ -292,11 +285,11 @@ class Seznam():
                 if stvar == hrana:
                     pass
                 else:
-                    print(str(stvar) + ';'               \
-                        + str(slovar[stvar][0]) + ';'    \
-                        + str(slovar[stvar][1]) + ';'    \
-                        + str(slovar[stvar][2]) + ';'    \
-                        + str(slovar[stvar][3]), file=dat)
+                    print(str(stvar) + ';'                  \
+                        + str(slovar[stvar][0]) + ';'       \
+                        + str(slovar[stvar][1]) + ';'       \
+                        + str(slovar[stvar][2]) + ';'       \
+                        + str(slovar[stvar][3]), file=dat)  
 
     def naredi_slovar_hrane(self):
         slovar = dict()
@@ -305,4 +298,3 @@ class Seznam():
                 vrednosti = [float(v) for v in seznam(vrstica)[1:]]
                 slovar.update( {seznam(vrstica)[0] : vrednosti} )
         return slovar
-
