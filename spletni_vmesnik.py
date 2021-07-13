@@ -1,8 +1,6 @@
 import bottle
 import model
 import datetime
-import json
-import os
 
 SKRIVNOST = 'banana'
 seznam_uporabnikov = model.VsiUporabniki('uporabniki')
