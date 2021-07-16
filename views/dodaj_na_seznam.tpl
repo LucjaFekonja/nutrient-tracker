@@ -1,10 +1,12 @@
 % rebase('osnova.tpl')
 
-<a class='alignright' href="/odjava/" style='color:white'>Odjava</a>
+<form class='alignright' action="/odjava/" method="POST" style='color:white'>
+    <button class='button button4' type="submit" >Odjava</button>
+</form>
 <h1><div class='naslov'>Dodaj na seznam</div></h1>
 
 <div class='container-small'>
-    <form action='/{{ime_uporabnika}}/{{datum}}/dodaj_na_seznam/' method="POST">
+    <form action='/dodaj_na_seznam/' method="POST">
         <label for="hrana"><b>Hrana: </b></label>
         <input type="text2" name="hrana" required>
         <br><br>
@@ -42,7 +44,7 @@
         <td style="width: 17%; text-align: center">{{slovar.get(hrana)[2]}}</td>
         <td style="width: 17%; text-align: center">{{slovar.get(hrana)[3]}}</td>
         <td style="text-align: center;">
-            <form action="/{{ime_uporabnika}}/{{datum}}/izbrisi-iz-seznama/" method="POST">
+            <form action="/izbrisi-iz-seznama/" method="POST">
                 <button class="button-izbrisi" name="hrana" value="{{hrana}}" type="submit">Izbriši</button>
             </form>
         </td>
