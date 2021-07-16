@@ -46,7 +46,7 @@
 
             .alignright {
                 float: right;
-                margin-top: 0.8cm;
+                margin-top: 0.4cm;
                 margin-right: 1cm;
             }
 

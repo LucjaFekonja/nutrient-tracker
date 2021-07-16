@@ -1,6 +1,8 @@
 %rebase('osnova.tpl')
 
-<a class='alignright' href="/odjava/" style='color:white'>Odjava</a>
+<form class='alignright' action="/odjava/" method="POST" style='color:white'>
+    <button class='button button4' type="submit" >Odjava</button>
+</form>
 <h1><div class='naslov-fp'>Vpiši hrano<div></h1>
 
 <div class='container-small'>
@@ -16,6 +18,6 @@
     </form>
 </div>
 
-<form action='/{{ime_uporabnika}}/{{datum}}/odpri_na_seznam/' method="POST">
+<form action='/odpri_na_seznam/' method="POST">
     <button class='button button3' style='margin-top:0.5cm;' type="submit">Dodaj v seznam</button>
 </form>

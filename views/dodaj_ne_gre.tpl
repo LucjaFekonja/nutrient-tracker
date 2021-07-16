@@ -1,6 +1,8 @@
 %rebase('osnova.tpl')
 
-<a class='alignright' href="/odjava/" style='color:white'>Odjava</a>
+<form class='alignright' action="/odjava/" method="POST" style='color:white'>
+    <button class='button button4' type="submit" >Odjava</button>
+</form>
 <h1><div class='naslov-fp'>Vpiši hrano<div></h1>
 
 <div class='container-small'>
@@ -17,6 +19,6 @@
 </div>
 
 <p style='font-size:12px; color:indigo; text-align:center'>Navedene jedi ni na seznamu hrane. Dodajte jo s klikom na spodnji gumb.</p>
-<form action='/{{ime_uporabnika}}/{{datum}}/odpri_na_seznam/' method="POST">
+<form action='/odpri_na_seznam/' method="POST">
     <button class='button button3' type="submit">Dodaj v seznam</button>
 </form>

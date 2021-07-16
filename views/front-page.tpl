@@ -1,6 +1,8 @@
 % rebase('osnova.tpl')
 
-<a href="/odjava/" class='alignright' style='color:white' >Odjava</a>
+<form class='alignright' action="/odjava/" method="POST" style='color:white'>
+    <button class='button button4' type="submit" >Odjava</button>
+</form>
 
 <form class='alignleft' action='/fp-izberi-dan/{{ime_uporabnika}}' method="POST">
     <label for="datum">Datum: </label>
