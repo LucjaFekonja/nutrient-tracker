@@ -64,7 +64,7 @@ with open("hrana.txt", encoding="utf-8") as dat:
 # _____________________________________________________________________________________________________________
 
 class Sledilnik(Osebno):
-    def __init__(self, id, teza, visina, starost, spol, aktivnost, datum=None):
+    def __init__(self, teza, visina, starost, spol, aktivnost, datum=None):
         super().__init__(teza, visina, starost, spol, aktivnost)
         self.seznam_hrane = dict()
         self.seznam_vrednosti = dict([
@@ -81,7 +81,6 @@ class Sledilnik(Osebno):
             ('preostali_pro', round(self.priporocene()[1], 1)),
             ('preostale_mas', round(self.priporocene()[2], 1)),
             ])
-        self.id = id
         self.datum = datum
 
 
@@ -153,7 +152,6 @@ class Sledilnik(Osebno):
             'spol' : self.spol,
             'aktivnost' : self.aktivnost,
             'datum' : self.datum,
-            'id_dneva' : self.id,
             'hrana' : self.seznam_hrane,
             'seznam_vrednosti' : self.seznam_vrednosti
         }
@@ -167,8 +165,7 @@ class Sledilnik(Osebno):
         spol = slovar['spol']
         aktivnost = slovar['aktivnost']
         datum = slovar['datum']
-        sledilnik = cls(id, teza, visina, starost, spol, aktivnost, datum)
-        sledilnik.id = slovar['id_dneva']
+        sledilnik = cls(teza, visina, starost, spol, aktivnost, datum)
         sledilnik.seznam_hrane = slovar['hrana']
         sledilnik.seznam_vrednosti = slovar['seznam_vrednosti']
         return sledilnik
@@ -180,13 +177,11 @@ class Uporabnik():
     def __init__(self, ime, geslo):
         self.ime = ime
         self.geslo = geslo
-        self.id_dneva = 0
         self.seznam_dni = []
 
     def nov_dan(self, teza, visina, starost, spol, aktivnost, datum=None):
-        evidenca = Sledilnik(self.id_dneva, teza, visina, starost, spol, aktivnost, datum)
+        evidenca = Sledilnik(teza, visina, starost, spol, aktivnost, datum)
         self.seznam_dni.append(evidenca)
-        self.id_dneva += 1
 
     def shrani_v_dat(self, datoteka):
         sez = []
@@ -195,8 +190,7 @@ class Uporabnik():
         slovar = {
             'ime' : self.ime,
             'geslo' : self.geslo,
-            'seznam_dni' : sez,
-            'id_dneva' : self.id_dneva
+            'seznam_dni' : sez
         }
         with open(datoteka, 'w', encoding="utf-8") as dat:
             json.dump(slovar, dat, ensure_ascii=False, indent=6)
@@ -207,7 +201,6 @@ class Uporabnik():
             slovar = json.load(dat)
         ime = slovar.get('ime')
         geslo = slovar.get('geslo')
-        id_dneva = slovar.get('id_dneva')
 
         sez = []
         for dan in slovar.get('seznam_dni'):
@@ -215,7 +208,6 @@ class Uporabnik():
             sez.append(sledilnik)
         
         uporabnik = cls(ime, geslo)
-        uporabnik.id_dneva = id_dneva
         uporabnik.seznam_dni = sez
         return uporabnik
 
