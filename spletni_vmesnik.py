@@ -80,7 +80,7 @@ def front_page(ime_uporabnika, datum):
     seznam_vrednosti = dnevni_seznam_vrednosti(datum_list, ime_uporabnika)        # Ti dve funkciji sta na koncu datoteke
     slovar_hrane = dnevni_slovar_hrane(datum_list, ime_uporabnika)
     datum_str = '. '.join([str(x) for x in datum.split('-')[::-1]])
-    bottle.response.set_cookie('datum', datum, secret=SKRIVNOST, path='/front-page/<ime_uporabnika>/<datum>')
+    bottle.response.set_cookie('datum', datum, secret=SKRIVNOST, path='/')
 
     return bottle.template('views/front-page.tpl', ime_uporabnika=ime_uporabnika,
                                                    datum=datum,
@@ -110,13 +110,6 @@ def front_page_dneva(ime_uporabnika):
     else:
         return bottle.redirect('/front-page/{}/{}'.format(ime, datum_str))
     
-@bottle.post('/spremeni_podatke/<ime_uporabnika>/<datum>')
-def gumb_spremeni_podatke(ime_uporabnika, datum):
-    ime = bottle.request.get_cookie('ime', secret=SKRIVNOST)
-    datum_piskot = bottle.request.get_cookie('datum', secret=SKRIVNOST)
-
-    uporabnik = seznam_uporabnikov.uporabniki.get(ime)
-
 
 @bottle.post('/fp-izbrisi/<ime_uporabnika>/<datum>')
 def izbrisi(ime_uporabnika, datum):
@@ -132,6 +125,35 @@ def izbrisi(ime_uporabnika, datum):
     seznam_uporabnikov.shrani(ime)
     return bottle.redirect('/front-page/{}/{}'.format(ime, datum_piskot))    
 
+
+##########################################   SPREMENI PODATKE   ##########################################
+
+@bottle.post('/fp-spremeni_podatke/<ime_uporabnika>/<datum>')
+def gumb_spremeni_podatke(ime_uporabnika, datum):
+    ime = bottle.request.get_cookie('ime', secret=SKRIVNOST)
+    datum_piskot = bottle.request.get_cookie('datum', secret=SKRIVNOST)
+    return bottle.redirect('/spremeni_podatke/{}/{}'.format(ime, datum_piskot))
+
+@bottle.get('/spremeni_podatke/<ime_uporabnika>/<datum>')
+def spremeni(ime_uporabnika, datum):
+    return bottle.template('views/spremeni.tpl', ime_uporabnika=ime_uporabnika,
+                                                 datum=datum)
+
+@bottle.post('/spremeni_podatke/<ime_uporabnika>/<datum>')
+def spremeni(ime_uporabnika, datum):
+    ime = bottle.request.get_cookie('ime', secret=SKRIVNOST)
+    datum_piskot = bottle.request.get_cookie('datum', secret=SKRIVNOST)
+    uporabnik = seznam_uporabnikov.uporabniki.get(ime)
+    dan = dan_z_datumom(uporabnik.seznam_dni, datum_kot_seznam(datum_piskot))
+
+    dan.teza = float(bottle.request.forms.getunicode('teza'))
+    dan.visina = float(bottle.request.forms.getunicode('visina'))
+    dan.starost = float(bottle.request.forms.getunicode('starost'))
+    dan.spol = str(bottle.request.forms.getunicode('spol'))
+    dan.aktivnost = str(bottle.request.forms.getunicode('aktivnost'))
+
+    seznam_uporabnikov.shrani(ime)
+    return bottle.redirect('/front-page/{}/{}'.format(ime, datum_piskot)) 
 
 ##########################################   DODAJ   ##########################################
 
