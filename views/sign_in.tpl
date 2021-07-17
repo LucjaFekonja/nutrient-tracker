@@ -25,7 +25,7 @@
     <b>Teža: </b><input type="number" step="0.01" min="1" name='teza'><a> kg</a>
     
     <br><br>
-    <b>Visina:  </b><input type="number" step="0.01" min="1" name='visina'><a> cm</a>
+    <b>Višina:  </b><input type="number" step="0.01" min="1" name='visina'><a> cm</a>
 
     <br><br>
     <b>Starost:   </b><input type="number" step="0.01" min="1" name='starost'><a> let</a>
