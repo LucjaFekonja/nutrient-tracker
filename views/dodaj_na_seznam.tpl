@@ -1,8 +1,13 @@
 % rebase('osnova.tpl')
 
+<form class='alignleft' action="/fp-nazaj/{{ime_uporabnika}}/{{datum}}" method="POST" style='color:white'>
+    <button class='button button4' type="submit" >Nazaj</button>
+</form>
+
 <form class='alignright' action="/odjava/" method="POST" style='color:white'>
     <button class='button button4' type="submit" >Odjava</button>
 </form>
+
 <h1><div class='naslov'>Dodaj na seznam</div></h1>
 
 <div class='container-small'>
