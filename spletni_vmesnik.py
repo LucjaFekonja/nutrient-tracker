@@ -125,6 +125,12 @@ def izbrisi(ime_uporabnika, datum):
     seznam_uporabnikov.shrani(ime)
     return bottle.redirect('/front-page/{}/{}'.format(ime, datum_piskot))    
 
+@bottle.post('/fp-nazaj/<ime_uporabnika>/<datum>')
+def na_front_page(ime_uporabnika, datum):
+    ime = bottle.request.get_cookie('ime', secret=SKRIVNOST)
+    datum_piskot = bottle.request.get_cookie('datum', secret=SKRIVNOST)
+    return bottle.redirect('/front-page/{}/{}'.format(ime, datum_piskot))
+    
 
 ##########################################   SPREMENI PODATKE   ##########################################
 
