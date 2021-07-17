@@ -10,19 +10,19 @@
         <div class="container-small">
           <b>Spol</b>
           <div class="radio-input">
-            <input type="radio" id="moski" name="spol" value="M">
+            <input type="radio" id="moski" name="spol" value="M" required>
             <label for="moski"><p>M</p></label>
-            <input type="radio" id="zenski" name="spol" value="Ž">
+            <input type="radio" id="zenski" name="spol" value="Ž" required>
             <label for="zenski"><p>Ž</p></label>
           </div>
           
-          <b>Teža: </b><input type="number" step="0.01" min="1" name='teza'><a> kg</a>
+          <b>Teža: </b><input type="number" step="0.01" min="1" name='teza' required><a> kg</a>
           
           <br><br>
-          <b>Višina:  </b><input type="number" step="0.01" min="1" name='visina'><a> cm</a>
+          <b>Višina:  </b><input type="number" step="0.01" min="1" name='visina' required><a> cm</a>
       
           <br><br>
-          <b>Starost:   </b><input type="number" step="0.01" min="1" name='starost'><a> let</a>
+          <b>Starost:   </b><input type="number" step="0.01" min="1" name='starost' required><a> let</a>
           
           <br><br>
           <table style='width:50%'>
