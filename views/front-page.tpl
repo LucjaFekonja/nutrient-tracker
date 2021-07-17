@@ -12,6 +12,11 @@
 
 <h1><div class='naslov-fp'>{{datum_str}}<div></h1>
 
+<form action='/fp-spremeni_podatke/{{ime_uporabnika}}/{{datum}}' method="POST">
+    <button class='button button2' style='background-color:gray' type="submit">Spremeni osebne podatke</button>
+</form>
+
+<br><br><br><br><br>
 <div class='container-small' style="border-color: #04AA6D;">
 % include('progress.html', oznaka='Kalorije', 
 %                          porabljene=seznam_vrednosti.get("porabljene_cal"),
