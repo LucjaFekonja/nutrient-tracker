@@ -142,8 +142,14 @@ def gumb_spremeni_podatke(ime_uporabnika, datum):
 
 @bottle.get('/spremeni_podatke/<ime_uporabnika>/<datum>')
 def spremeni(ime_uporabnika, datum):
+    ime = bottle.request.get_cookie('ime', secret=SKRIVNOST)
+    datum_piskot = bottle.request.get_cookie('datum', secret=SKRIVNOST)
+    uporabnik = seznam_uporabnikov.uporabniki.get(ime)
+    dan = dan_z_datumom(uporabnik.seznam_dni, datum_kot_seznam(datum_piskot))
+    
     return bottle.template('views/spremeni.tpl', ime_uporabnika=ime_uporabnika,
-                                                 datum=datum)
+                                                 datum=datum,
+                                                 dan=dan)
 
 @bottle.post('/spremeni_podatke/<ime_uporabnika>/<datum>')
 def spremeni(ime_uporabnika, datum):
@@ -157,6 +163,16 @@ def spremeni(ime_uporabnika, datum):
     dan.starost = float(bottle.request.forms.getunicode('starost'))
     dan.spol = str(bottle.request.forms.getunicode('spol'))
     dan.aktivnost = str(bottle.request.forms.getunicode('aktivnost'))
+
+    vrednosti = dan.seznam_vrednosti
+    vrednosti["vse_cal"] = dan.priporocene_cal()
+    vrednosti["vsi_oh"] = dan.priporocene()[0]
+    vrednosti["vsi_pro"] = dan.priporocene()[1]
+    vrednosti["vse_mas"] = dan.priporocene()[2]
+    vrednosti["preostale_cal"] = round(dan.priporocene_cal() - vrednosti['porabljene_cal'], 1)
+    vrednosti["preostali_oh"] = round(dan.priporocene()[0] - vrednosti['porabljeni_oh'], 1)
+    vrednosti["preostali_pro"] = round(dan.priporocene()[1] - vrednosti['porabljeni_pro'], 1)
+    vrednosti["preostale_mas"] = round(dan.priporocene()[2] - vrednosti['porabljene_mas'], 1)
 
     seznam_uporabnikov.shrani(ime)
     return bottle.redirect('/front-page/{}/{}'.format(ime, datum_piskot)) 
