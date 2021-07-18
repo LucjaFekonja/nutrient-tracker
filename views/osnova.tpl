@@ -253,6 +253,7 @@
             .meter > span {
               display: block;
               height: 100%;
+              max-width: 100%;
               border-top-right-radius: 8px;
               border-bottom-right-radius: 8px;
               border-top-left-radius: 20px;
