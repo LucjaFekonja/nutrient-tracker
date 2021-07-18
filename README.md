@@ -7,7 +7,7 @@ Program zaženete z datoteko spletni_vmesnik.py.
 ![slikica front page-a](./readme_slike/front-page.png)
 
 Po prijavi smo preusmerjeni na glavno stran. Na vrhu je izpisan izbran datum, ki ga lahko poljubno spremenite.
-Spremenite lahko tudi svoje osebne podatke.Na tej strani so izpisane dnevne vnešene vrednosti ter hrana, ki ste
+Spremenite lahko tudi svoje osebne podatke. Na tej strani so izpisane dnevne vnešene vrednosti ter hrana, ki ste
 jo vpisali. Na dnu strani je gumb za dodajanje hrane na izbran dan.
 
 ![slikica dodaj page-a](./readme_slike/dodaj.png)
