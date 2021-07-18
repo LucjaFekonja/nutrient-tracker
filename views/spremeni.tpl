@@ -10,6 +10,16 @@
 
 <h1><div class='naslov-fp'>Osebni podatki<div></h1>
 
+  <div class="container-small" style="width: 5cm;">
+    <b>Shranjeni podatki:</b>
+    <p>Spol: <span style='color: gray;'>{{dan.spol}}</span></p>
+    <p>Teža: <span style='color: gray;'>{{dan.teza}} kg</span></p>
+    <p>Višina: <span style='color: gray;'>{{dan.visina}} cm</span></p>
+    <p>Starost: <span style='color: gray;'>{{dan.starost}} let</span></p>
+    <p>Aktivnost: <span style='color: gray;'>{{dan.aktivnost}}</span></p>
+  </div>
+
+<br>
     <form action="/spremeni_podatke/{{ime_uporabnika}}/{{datum}}" method="POST">
         <div class="container-small">
           <b>Spol</b>
