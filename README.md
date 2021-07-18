@@ -4,7 +4,7 @@ je program za vodenje evidence dnevno pridobljenih makronutrientov, ki omogoča 
 Program zaženete z datoteko spletni_vmesnik.py.
 
 ## Opis programa
-![slikica front page-a](./readme_slike/front_page.png)
+![slikica front page-a](./readme_slike/front-page.png)
 
 Po prijavi smo preusmerjeni na glavno stran. Na vrhu je izpisan izbran datum, ki ga lahko poljubno spremenite.
 Spremenite lahko tudi svoje osebne podatke.Na tej strani so izpisane dnevne vnešene vrednosti ter hrana, ki ste
