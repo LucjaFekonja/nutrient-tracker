@@ -171,8 +171,10 @@ def gumb_dodaj(ime_uporabnika, datum):
 
 @bottle.get('/front-page/<ime_uporabnika>/<datum>/dodaj')
 def dodaj(ime_uporabnika, datum):
+    slovar = slovar_hrane.naredi_slovar_hrane()
     return bottle.template('views/dodaj.tpl', ime_uporabnika=ime_uporabnika,
-                                              datum=datum)
+                                              datum=datum,
+                                              slovar=slovar)
 
 @bottle.post('/dodaj/<ime_uporabnika>/<datum>/')
 def dodaj(ime_uporabnika, datum):
@@ -184,19 +186,18 @@ def dodaj(ime_uporabnika, datum):
     hrana = bottle.request.forms.getunicode('hrana').lower()
     gram = float(bottle.request.forms.getunicode('gram'))
 
-    if hrana not in list(slovar_hrane.naredi_slovar_hrane().keys()):
-        return bottle.redirect('/front-page/{}/{}/ni'.format(ime, datum_piskot))
-    else:
-        datum_list = datum_kot_seznam(datum_piskot)
-        dan_z_datumom(seznam_dni, datum_list).dodaj(hrana, gram)
-        seznam_uporabnikov.shrani(ime)
-        return bottle.redirect('/front-page/{}/{}'.format(ime, datum_piskot))
+    datum_list = datum_kot_seznam(datum_piskot)
+    dan_z_datumom(seznam_dni, datum_list).dodaj(hrana, gram)
+    seznam_uporabnikov.shrani(ime)
+    return bottle.redirect('/front-page/{}/{}'.format(ime, datum_piskot))
 
 
 @bottle.get('/front-page/<ime_uporabnika>/<datum>/ni')
 def dodaj_ne_gre(ime_uporabnika, datum):
+    slovar = slovar_hrane.naredi_slovar_hrane()
     return bottle.template('views/dodaj_ne_gre.tpl', ime_uporabnika=ime_uporabnika,
-                                                     datum=datum)
+                                                     datum=datum,
+                                                     slovar=slovar)
 
 
 #######################################  DODAJ NA SEZNAM   #######################################
