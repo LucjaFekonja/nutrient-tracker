@@ -240,8 +240,7 @@ def izbrisi_iz_seznama(datum):
 
 @bottle.post('/odjava/')
 def sign_out():
-    ime = bottle.request.get_cookie('ime', secret=SKRIVNOST)
-    bottle.response.delete_cookie('ime', ime, secret=SKRIVNOST, path='/')
+    bottle.response.delete_cookie('ime', secret=SKRIVNOST, path='/')
     return bottle.redirect('/')
 
 
