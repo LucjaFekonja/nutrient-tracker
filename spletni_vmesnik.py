@@ -2,7 +2,9 @@ import bottle
 import model
 import datetime
 
-SKRIVNOST = 'banana'
+with open('sifra.txt') as d:
+    SIFRA = d.read()
+    
 seznam_uporabnikov = model.VsiUporabniki('uporabniki')
 slovar_hrane = model.Seznam('hrana.txt')
 
@@ -37,10 +39,10 @@ def login():
                               datum_list
                               )
             seznam_uporabnikov.shrani(ime)
-            return bottle.redirect('/front-page/{}/{}'.format(ime, datum))
+            return bottle.redirect('/front-page/{}'.format(datum))
         else:
             # Če ima, vrnemo stran z že vnešenimi podatki. 
-            return bottle.redirect('/front-page/{}/{}'.format(ime, datum))
+            return bottle.redirect('/front-page/{}'.format(datum))
 
 
 #######################################  SIGN IN PAGE   #######################################
@@ -67,29 +69,29 @@ def sign_in():
         uporabnik.nov_dan(teza, visina, starost, spol, aktivnost, datum)     # dodamo nov dan na seznam_dni
         seznam_uporabnikov.shrani(ime)                                       # shranimo v json v mapi 'uporabniki'
         bottle.response.set_cookie('ime', ime, secret=SKRIVNOST, path='/')
-        return bottle.redirect('/front-page/{}/{}'.format(ime, datum_str))
+        return bottle.redirect('/front-page/{}'.format(datum_str))
     else:
         return bottle.redirect('/vpis/')
 
 
 #######################################  FRONT PAGE   #######################################
 
-@bottle.get('/front-page/<ime_uporabnika>/<datum>')
-def front_page(ime_uporabnika, datum):
+@bottle.get('/front-page/<datum>')
+def front_page(datum):
     datum_list = datum_kot_seznam(datum)
-    seznam_vrednosti = dnevni_seznam_vrednosti(datum_list, ime_uporabnika)        # Ti dve funkciji sta na koncu datoteke
-    slovar_hrane = dnevni_slovar_hrane(datum_list, ime_uporabnika)
+    ime = str(bottle.request.get_cookie('ime', secret=SKRIVNOST))
+    seznam_vrednosti = dnevni_seznam_vrednosti(datum_list, ime)        # Ti dve funkciji sta na koncu datoteke
+    slovar_hrane = dnevni_slovar_hrane(datum_list, ime)
     datum_str = '. '.join([str(x) for x in datum.split('-')[::-1]])
-    bottle.response.set_cookie('datum', datum, secret=SKRIVNOST, path='/')
 
-    return bottle.template('views/front-page.tpl', ime_uporabnika=ime_uporabnika,
+    return bottle.template('views/front-page.tpl', ime=ime,
                                                    datum=datum,
                                                    seznam_vrednosti=seznam_vrednosti,
                                                    slovar_hrane=slovar_hrane,
                                                    datum_str=datum_str)
 
-@bottle.post('/fp-izberi-dan/<ime_uporabnika>')
-def front_page_dneva(ime_uporabnika): 
+@bottle.post('/fp-izberi-dan/')
+def front_page_dneva(): 
     ime = str(bottle.request.get_cookie('ime', secret=SKRIVNOST))
     uporabnik = seznam_uporabnikov.uporabniki.get(ime)
     dnevi = uporabnik.seznam_dni
@@ -105,58 +107,51 @@ def front_page_dneva(ime_uporabnika):
                           dan.aktivnost,
                           datum
                           )
-        seznam_uporabnikov.shrani(ime_uporabnika)
-        return bottle.redirect('/front-page/{}/{}'.format(ime, datum_str))
+        seznam_uporabnikov.shrani(ime)
+        return bottle.redirect('/front-page/{}'.format(datum_str))
     else:
-        return bottle.redirect('/front-page/{}/{}'.format(ime, datum_str))
+        return bottle.redirect('/front-page/{}'.format(datum_str))
     
 
-@bottle.post('/fp-izbrisi/<ime_uporabnika>/<datum>')
-def izbrisi(ime_uporabnika, datum):
+@bottle.post('/fp-izbrisi/<datum>')
+def izbrisi(datum):
     ime = bottle.request.get_cookie('ime', secret=SKRIVNOST)
-    datum_piskot = bottle.request.get_cookie('datum', secret=SKRIVNOST)
     
     uporabnik = seznam_uporabnikov.uporabniki.get(ime)
     seznam_dni = uporabnik.seznam_dni
     
     hrana = bottle.request.forms.getunicode('hrana')
-    datum_list = datum_kot_seznam(datum_piskot)
+    datum_list = datum_kot_seznam(datum)
     dan_z_datumom(seznam_dni, datum_list).izbrisi(hrana)
     seznam_uporabnikov.shrani(ime)
-    return bottle.redirect('/front-page/{}/{}'.format(ime, datum_piskot))    
+    return bottle.redirect('/front-page/{}'.format(datum))    
 
-@bottle.post('/fp-nazaj/<ime_uporabnika>/<datum>')
-def na_front_page(ime_uporabnika, datum):
-    ime = bottle.request.get_cookie('ime', secret=SKRIVNOST)
-    datum_piskot = bottle.request.get_cookie('datum', secret=SKRIVNOST)
-    return bottle.redirect('/front-page/{}/{}'.format(ime, datum_piskot))
+
+@bottle.post('/fp-nazaj/<datum>')
+def na_front_page(datum):
+    return bottle.redirect('/front-page/{}'.format(datum))
     
 
 ##########################################   SPREMENI PODATKE   ##########################################
 
-@bottle.post('/fp-spremeni_podatke/<ime_uporabnika>/<datum>')
-def gumb_spremeni_podatke(ime_uporabnika, datum):
-    ime = bottle.request.get_cookie('ime', secret=SKRIVNOST)
-    datum_piskot = bottle.request.get_cookie('datum', secret=SKRIVNOST)
-    return bottle.redirect('/spremeni_podatke/{}/{}'.format(ime, datum_piskot))
+@bottle.post('/fp-spremeni_podatke/<datum>')
+def gumb_spremeni_podatke(datum):
+    return bottle.redirect('/spremeni_podatke/{}'.format(datum))
 
-@bottle.get('/spremeni_podatke/<ime_uporabnika>/<datum>')
-def spremeni(ime_uporabnika, datum):
+@bottle.get('/spremeni_podatke/<datum>')
+def spremeni(datum):
     ime = bottle.request.get_cookie('ime', secret=SKRIVNOST)
-    datum_piskot = bottle.request.get_cookie('datum', secret=SKRIVNOST)
     uporabnik = seznam_uporabnikov.uporabniki.get(ime)
-    dan = dan_z_datumom(uporabnik.seznam_dni, datum_kot_seznam(datum_piskot))
+    dan = dan_z_datumom(uporabnik.seznam_dni, datum_kot_seznam(datum))
     
-    return bottle.template('views/spremeni.tpl', ime_uporabnika=ime_uporabnika,
-                                                 datum=datum,
+    return bottle.template('views/spremeni.tpl', datum=datum,
                                                  dan=dan)
 
-@bottle.post('/spremeni_podatke/<ime_uporabnika>/<datum>')
-def spremeni(ime_uporabnika, datum):
+@bottle.post('/spremeni_podatke/<datum>')
+def spremeni(datum):
     ime = bottle.request.get_cookie('ime', secret=SKRIVNOST)
-    datum_piskot = bottle.request.get_cookie('datum', secret=SKRIVNOST)
     uporabnik = seznam_uporabnikov.uporabniki.get(ime)
-    dan = dan_z_datumom(uporabnik.seznam_dni, datum_kot_seznam(datum_piskot))
+    dan = dan_z_datumom(uporabnik.seznam_dni, datum_kot_seznam(datum))
 
     dan.teza = float(bottle.request.forms.getunicode('teza'))
     dan.visina = float(bottle.request.forms.getunicode('visina'))
@@ -165,6 +160,11 @@ def spremeni(ime_uporabnika, datum):
     dan.aktivnost = str(bottle.request.forms.getunicode('aktivnost'))
 
     vrednosti = dan.seznam_vrednosti
+
+#   sez1 = ['vse_oh', ...]
+#   for x, i in sez1, range(0, 3):
+#       vrednosti[x] = dan.priporocene()[i]
+
     vrednosti["vse_cal"] = dan.priporocene_cal()
     vrednosti["vsi_oh"] = dan.priporocene()[0]
     vrednosti["vsi_pro"] = dan.priporocene()[1]
@@ -175,67 +175,51 @@ def spremeni(ime_uporabnika, datum):
     vrednosti["preostale_mas"] = round(dan.priporocene()[2] - vrednosti['porabljene_mas'], 1)
 
     seznam_uporabnikov.shrani(ime)
-    return bottle.redirect('/front-page/{}/{}'.format(ime, datum_piskot)) 
+    return bottle.redirect('/front-page/{}'.format(datum)) 
 
 ##########################################   DODAJ   ##########################################
 
-@bottle.post('/fp-dodaj/<ime_uporabnika>/<datum>')
-def gumb_dodaj(ime_uporabnika, datum):
-    ime = bottle.request.get_cookie('ime', secret=SKRIVNOST)
-    datum_piskot = bottle.request.get_cookie('datum', secret=SKRIVNOST)
-    return bottle.redirect('/front-page/{}/{}/dodaj'.format(ime, datum_piskot))
+@bottle.post('/fp-dodaj/<datum>')
+def gumb_dodaj(datum):
+    return bottle.redirect('/front-page/{}/dodaj'.format(datum))
 
-@bottle.get('/front-page/<ime_uporabnika>/<datum>/dodaj')
-def dodaj(ime_uporabnika, datum):
+@bottle.get('/front-page/<datum>/dodaj')
+def dodaj(datum):
     slovar = slovar_hrane.naredi_slovar_hrane()
-    return bottle.template('views/dodaj.tpl', ime_uporabnika=ime_uporabnika,
-                                              datum=datum,
+    return bottle.template('views/dodaj.tpl', datum=datum,
                                               slovar=slovar)
 
-@bottle.post('/dodaj/<ime_uporabnika>/<datum>/')
-def dodaj(ime_uporabnika, datum):
+@bottle.post('/dodaj/<datum>/')
+def dodaj(datum):
     ime = bottle.request.get_cookie('ime', secret=SKRIVNOST)
-    datum_piskot = bottle.request.get_cookie('datum', secret=SKRIVNOST)
     uporabnik = seznam_uporabnikov.uporabniki.get(ime)
     seznam_dni = uporabnik.seznam_dni
 
     hrana = bottle.request.forms.getunicode('hrana').lower()
     gram = float(bottle.request.forms.getunicode('gram'))
 
-    datum_list = datum_kot_seznam(datum_piskot)
+    datum_list = datum_kot_seznam(datum)
     dan_z_datumom(seznam_dni, datum_list).dodaj(hrana, gram)
     seznam_uporabnikov.shrani(ime)
-    return bottle.redirect('/front-page/{}/{}'.format(ime, datum_piskot))
-
-
-@bottle.get('/front-page/<ime_uporabnika>/<datum>/ni')
-def dodaj_ne_gre(ime_uporabnika, datum):
-    slovar = slovar_hrane.naredi_slovar_hrane()
-    return bottle.template('views/dodaj_ne_gre.tpl', ime_uporabnika=ime_uporabnika,
-                                                     datum=datum,
-                                                     slovar=slovar)
+    return bottle.redirect('/front-page/{}'.format(datum))
 
 
 #######################################  DODAJ NA SEZNAM   #######################################
 
-@bottle.post('/odpri_na_seznam/')
-def gumb_dodaj_na_seznam():
-    return bottle.redirect('/dodaj_na_seznam/')
+@bottle.post('/odpri_na_seznam/<datum>')
+def gumb_dodaj_na_seznam(datum):
+    return bottle.redirect('/dodaj_na_seznam/{}'.format(datum))
 
-@bottle.get('/dodaj_na_seznam/')
-def dodaj_na_seznam():
+@bottle.get('/dodaj_na_seznam/<datum>')
+def dodaj_na_seznam(datum):
     ime = bottle.request.get_cookie('ime', secret=SKRIVNOST)
-    datum = bottle.request.get_cookie('datum', secret=SKRIVNOST)
     slovar = slovar_hrane.naredi_slovar_hrane()
-    return bottle.template('views/dodaj_na_seznam.tpl', ime_uporabnika=ime,
+    return bottle.template('views/dodaj_na_seznam.tpl', ime=ime,
                                                         datum=datum,
                                                         slovar=slovar)
 
-@bottle.post('/dodaj_na_seznam/')
-def dodaj_na_seznam():
-    ime = bottle.request.get_cookie('ime', secret=SKRIVNOST)
-    datum = bottle.request.get_cookie('datum', secret=SKRIVNOST)
-
+@bottle.post('/dodaj_na_seznam/<datum>/')
+def dodaj_na_seznam(datum):
     hrana = bottle.request.forms.getunicode('hrana').lower()
     cal = bottle.request.forms.getunicode('cal').replace(',', '.')
     oh = bottle.request.forms.getunicode('oh').replace(',', '.')
@@ -243,15 +227,13 @@ def dodaj_na_seznam():
     mas = bottle.request.forms.getunicode('mas').replace(',', '.')
 
     slovar_hrane.dodaj(hrana, cal, oh, pro, mas)
-    return bottle.redirect('/front-page/{}/{}'.format(ime, datum))
+    return bottle.redirect('/dodaj_na_seznam/{}'.format(datum))
 
-@bottle.post('/izbrisi-iz-seznama/')
-def izbrisi_iz_seznama():
-    ime = bottle.request.get_cookie('ime', secret=SKRIVNOST)
-    datum = bottle.request.get_cookie('datum', secret=SKRIVNOST)
+@bottle.post('/izbrisi-iz-seznama/<datum>/')
+def izbrisi_iz_seznama(datum):
     hrana = bottle.request.forms.getunicode('hrana')
     slovar_hrane.izbrisi(hrana)
-    return bottle.redirect('/front-page/{}/{}'.format(ime, datum))
+    return bottle.redirect('/dodaj_na_seznam/{}'.format(datum))
 
 
 ############################################  ODJAVA   ############################################
@@ -259,9 +241,7 @@ def izbrisi_iz_seznama():
 @bottle.post('/odjava/')
 def sign_out():
     ime = bottle.request.get_cookie('ime', secret=SKRIVNOST)
-    datum = bottle.request.get_cookie('datum', secret=SKRIVNOST)
-    bottle.response.delete_cookie(ime, secret=SKRIVNOST, path='/')
-    bottle.response.delete_cookie(datum, secret=SKRIVNOST, path='/front-page/<ime_uporabnika>/<datum>')
+    bottle.response.delete_cookie('ime', ime, secret=SKRIVNOST, path='/')
     return bottle.redirect('/')
 
 

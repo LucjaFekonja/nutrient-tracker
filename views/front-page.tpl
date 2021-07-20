@@ -4,7 +4,7 @@
     <button class='button button4' type="submit" >Odjava</button>
 </form>
 
-<form class='alignleft' action='/fp-izberi-dan/{{ime_uporabnika}}' method="POST">
+<form class='alignleft' action='/fp-izberi-dan/' method="POST">
     <label for="datum">Datum: </label>
     <input type="date" id="datum" name='datum' required> 
     <button class='button button4' type="submit" >Pošlji</button>
@@ -12,7 +12,7 @@
 
 <h1><div class='naslov-fp'>{{datum_str}}<div></h1>
 
-<form action='/fp-spremeni_podatke/{{ime_uporabnika}}/{{datum}}' method="POST">
+<form action='/fp-spremeni_podatke/{{datum}}' method="POST">
     <button class='button button2' style='background-color:gray' type="submit">Spremeni osebne podatke</button>
 </form>
 
@@ -51,7 +51,7 @@
         <td>{{hrana}}</td>
         <td style="width: 30%;">{{slovar_hrane.get(hrana)}} g</td>
         <td style="text-align: center;">
-            <form action="/fp-izbrisi/{{ime_uporabnika}}/{{datum}}" method="POST">
+            <form action="/fp-izbrisi/{{datum}}" method="POST">
                 <button class="button-izbrisi" name="hrana" value="{{hrana}}" type="submit">Izbriši</button>
             </form>
         </td>
@@ -60,6 +60,6 @@
 </table>
 <br>
 
-<form action='/fp-dodaj/{{ime_uporabnika}}/{{datum}}' method="POST">
+<form action='/fp-dodaj/{{datum}}' method="POST">
     <button class='button button2' type="submit">Dodaj</button>
 </form>

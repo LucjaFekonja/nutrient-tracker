@@ -1,6 +1,6 @@
 % rebase('osnova.tpl')
 
-<form class='alignleft' action="/fp-nazaj/{{ime_uporabnika}}/{{datum}}" method="POST" style='color:white'>
+<form class='alignleft' action="/fp-nazaj/{{datum}}" method="POST" style='color:white'>
   <button class='button button4' type="submit" >Nazaj</button>
 </form>
 
@@ -20,7 +20,7 @@
   </div>
 
 <br>
-    <form action="/spremeni_podatke/{{ime_uporabnika}}/{{datum}}" method="POST">
+    <form action="/spremeni_podatke/{{datum}}" method="POST">
         <div class="container-small">
           <b>Spol</b>
           <div class="radio-input">

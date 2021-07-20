@@ -1,6 +1,6 @@
 %rebase('osnova.tpl')
 
-<form class='alignleft' action="/fp-nazaj/{{ime_uporabnika}}/{{datum}}" method="POST" style='color:white'>
+<form class='alignleft' action="/fp-nazaj/{{datum}}" method="POST" style='color:white'>
     <button class='button button4' type="submit" >Nazaj</button>
 </form>
 
@@ -10,7 +10,7 @@
 <h1><div class='naslov-fp'>Vpiši hrano<div></h1>
 
 <div class='container-small'>
-    <form action='/dodaj/{{ime_uporabnika}}/{{datum}}/' method="POST">
+    <form action='/dodaj/{{datum}}/' method="POST">
         <table style='width:50%'>
             <tr>
               <td width='30%'><b>Hrana:</b></td>
@@ -33,6 +33,6 @@
 </div>
 
 <p style='font-size:12px; color:indigo; text-align:center'>Željene jedi ni na seznamu hrane? Dodajte jo s klikom na spodnji gumb.</p>
-<form action='/odpri_na_seznam/' method="POST">
+<form action='/odpri_na_seznam/{{datum}}' method="POST">
     <button class='button button3' style='margin-top:0.5cm;' type="submit">Dodaj v seznam</button>
 </form>
