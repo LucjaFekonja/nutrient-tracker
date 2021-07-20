@@ -3,8 +3,8 @@ import model
 import datetime
 
 with open('sifra.txt') as d:
-    SIFRA = d.read()
-    
+    SKRIVNOST = d.read()
+
 seznam_uporabnikov = model.VsiUporabniki('uporabniki')
 slovar_hrane = model.Seznam('hrana.txt')
 
